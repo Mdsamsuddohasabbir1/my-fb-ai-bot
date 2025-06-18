@@ -1,14 +1,13 @@
 const express = require('express');
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// Middleware to parse JSON
+// Middleware: JSON parse করার জন্য
 app.use(express.json());
 
-// Your verify token (এই নামটাই পরে Facebook Console এ দিবে)
+// Facebook VERIFY TOKEN (এইটাই Facebook Console এ দিবে)
 const VERIFY_TOKEN = "my_verify_token";
 
-// GET route for Facebook webhook verification
+// GET /webhook → Facebook verification করার জন্য
 app.get('/webhook', (req, res) => {
   const mode = req.query['hub.mode'];
   const token = req.query['hub.verify_token'];
@@ -22,13 +21,11 @@ app.get('/webhook', (req, res) => {
   }
 });
 
-// POST route for receiving messages from Messenger
+// POST /webhook → Messenger message handle করার জন্য
 app.post('/webhook', (req, res) => {
   console.log('📩 Incoming Message:', JSON.stringify(req.body, null, 2));
   res.status(200).send('EVENT_RECEIVED');
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
-});
+// Vercel এর জন্য export করতে হবে
+module.exports = app;

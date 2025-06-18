@@ -1,13 +1,12 @@
 const express = require('express');
+const serverless = require('serverless-http'); // 🟢 নতুন লাইন
 const app = express();
 
-// Middleware: JSON parse করার জন্য
 app.use(express.json());
 
-// Facebook VERIFY TOKEN (এইটাই Facebook Console এ দিবে)
 const VERIFY_TOKEN = "my_verify_token";
 
-// GET /webhook → Facebook verification করার জন্য
+// ✅ Facebook Verification
 app.get('/webhook', (req, res) => {
   const mode = req.query['hub.mode'];
   const token = req.query['hub.verify_token'];
@@ -21,11 +20,11 @@ app.get('/webhook', (req, res) => {
   }
 });
 
-// POST /webhook → Messenger message handle করার জন্য
+// ✅ Incoming Messages
 app.post('/webhook', (req, res) => {
   console.log('📩 Incoming Message:', JSON.stringify(req.body, null, 2));
   res.status(200).send('EVENT_RECEIVED');
 });
 
-// Vercel এর জন্য export করতে হবে
-module.exports = app;
+// ✅ Export for Vercel
+module.exports.handler = serverless(app); // 🟢 Express কে Serverless বানানো

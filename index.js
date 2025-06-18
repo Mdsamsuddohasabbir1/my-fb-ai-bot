@@ -1,12 +1,12 @@
 const express = require('express');
-const serverless = require('serverless-http'); // 🟢 নতুন লাইন
-const app = express();
+const serverless = require('serverless-http');
 
+const app = express();
 app.use(express.json());
 
 const VERIFY_TOKEN = "my_verify_token";
 
-// ✅ Facebook Verification
+// Facebook Webhook Verification
 app.get('/webhook', (req, res) => {
   const mode = req.query['hub.mode'];
   const token = req.query['hub.verify_token'];
@@ -20,11 +20,11 @@ app.get('/webhook', (req, res) => {
   }
 });
 
-// ✅ Incoming Messages
+// Facebook Message Handling
 app.post('/webhook', (req, res) => {
   console.log('📩 Incoming Message:', JSON.stringify(req.body, null, 2));
   res.status(200).send('EVENT_RECEIVED');
 });
 
-// ✅ Export for Vercel
-module.exports.handler = serverless(app); // 🟢 Express কে Serverless বানানো
+// Export the serverless handler
+module.exports.handler = serverless(app);
